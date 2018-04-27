@@ -1,6 +1,12 @@
 #include "libgrafo.h"
 #include <stdio.h>
 
+#define BRANCO 0
+#define CINZA 1
+#define PRETO 2
+#define TRUE 1
+#define FALSE 0
+
 Grafo * a_gamat(int nv){
     Grafo *g = NULL;
     g = (Grafo *) malloc(sizeof(Grafo));
@@ -36,7 +42,7 @@ void n_grafo(Grafo **g, int nv){
 int menu_n_grafo(){
     printf("1. Grafo direcionado;\n");
     printf("2. Grafo não-direcionado.\n");
-    printf("Digite uma opção: ");
+    printf("> Digite uma opção: ");
     int op; scanf("%d", &op);
     return op;
 }
@@ -114,9 +120,113 @@ int ex_amat(Grafo *g, int v1, int v2){
     return g->p_mat[--v1][--v2] > 0;
 }
 
-int lvad_amat(Grafo *g, int vert){
+int grau(Grafo *g, int v){
+    int i, s = 0;
+    for(i = 0; i < g->n_vert; i++)
+        if(g->p_mat[v - 1][i] != 0) s++;
+    return s;
+}
+
+int reg(Grafo *g){
+    int i;
+    if(g->n_vert == 1) return TRUE;
+    int gr = grau(g, 1); // retorna o grau do vértice 1 (na matriz: 0)
+    for(i = 1; i < g->n_vert; i++) // Linhas da matriz
+        if(grau(g, i + 1) != gr) return FALSE;
+    return gr;
+}
+
+int ls_vazia_amat(Grafo *g, int v){
     int i;
     for(i = 0; i < g->n_vert; i++)
-        if(g->p_mat[--vert][i] > 0) return 1;
-    return 0;
+        if(g->p_mat[v][i] != 0) return FALSE;
+    return TRUE;
+}
+
+int primeiro_ls_amat(Grafo *g, int v){
+    int i;
+    for(i = 0; i < g->n_vert; i++)
+        if(g->p_mat[v][i] > 0) return i;
+    return -1;
+}
+
+void prox_adj_amat(Grafo *g, int *v, int *adj, int *peso, int *prox, int *fim){
+    *adj = *prox; //adjacente é o próximo
+    *peso = g->p_mat[*v][*prox]; (*prox)++;
+    //deixa selecionado o "próximo do próximo"
+    while(*prox < g->n_vert && g->p_mat[*v][*prox] == 0) (*prox)++;
+    if(*prox == g->n_arst) *fim = TRUE;
+}
+
+void visita_dfs(Grafo *g, int u, int *tmp, int *d,
+    int *t, int *cor, int *ant){
+    int fim_ls;
+    int peso, aux, v;
+    cor[u] = CINZA; (*tmp)++; d[u] = *tmp;
+    printf("Vértice %d decoberto em tempo %d.\n", u + 1, d[u]);
+    if(!ls_vazia_amat(g, u)){
+        aux = primeiro_ls_amat(g, u);
+        fim_ls = FALSE;
+        while(!fim_ls){
+            /* O próximo da lista de adjacentes é retornado por v
+             e aux já recebe o próximo com relação a v */
+            prox_adj_amat(g, &u, &v, &peso, &aux, &fim_ls);
+            if(cor[v] == BRANCO){
+                ant[v] = u;
+                visita_dfs(g, v, tmp, d, t, cor, ant);
+            }
+        }
+    }
+    cor[u] = PRETO; (*tmp)++; t[u] = *tmp;
+    printf("Vértice %d terminado em tempo %d.\n", u + 1, t[u]);
+}
+
+void busca_dfs(Grafo *g){
+    int v, tmp, i;
+    int d[g->n_vert], t[g->n_vert],
+    cor[g->n_vert], ant[g->n_vert];
+    tmp = 0;
+    for(i = 0; i < g->n_vert; i++){
+        cor[i] = BRANCO;
+        ant[i] = -1;
+    }
+    for(i = 0; i < g->n_vert; i++)
+        if(cor[i] == BRANCO) visita_dfs(g, v, &tmp, d, t, cor, ant);
+}
+
+int empty_q(Fila *f){
+    return (f == NULL);
+}
+
+void enq(Fila **f, int v){
+    Fila *p = NULL;
+    p = (Fila *)malloc(sizeof(Fila));
+    if(!p){
+        p->prox = *f; p->v = v;
+        *f = p;
+    }
+}
+
+void deq(Fila **f, int *v){
+    Fila *p1 = NULL; p1 = *f;
+    if(empty_q(*f)){
+        printf("Fila vazia!"); return;
+    }
+    else{
+        Fila *p2 = NULL; p2 = *f;
+        while(p2->prox != NULL){
+            p1 = p2; p2 = p2->prox;
+        }
+        *v = p2->v;
+        p2->prox = NULL; free(p2);
+        if(p1 == p2) *f = NULL;
+    }
+}
+
+void primeiro_f(Fila *f, int *v){
+    if(!empty_q(f)){
+        Fila *p = f;
+        while(p->prox != NULL) p = p->prox;
+        *v = p->v;
+    } else printf("Fila vazia!"); v = NULL; return;
 }
