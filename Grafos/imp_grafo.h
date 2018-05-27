@@ -50,6 +50,10 @@ int menu_n_grafo(){
 int ler_grafo(Grafo **g){
     int nv, na, m;
     m = menu_n_grafo();
+    if(m < 1 || m > 2){
+        printf("Opção inválida! Saindo...");
+        exit(1);
+    }
     printf("\nDigite o número de vértices: ");
     scanf("%d", &nv);
     printf("Digite o número de arestas: ");
