@@ -7,8 +7,7 @@
 int menu_p(){
     printf("\nInserir novo grafo representado como:\n");
     printf("1. Matriz de Adjacências;\n");
-    printf("2. Matriz de Incidências;\n");
-    printf("3. Lista de Adjacências;\n");
+    printf("2. Lista de Adjacências;\n");
     printf("0. Sair do programa...\n"); int op;
     printf("> Digite uma opção: "); scanf("%d", &op);
     printf("\n");
@@ -156,8 +155,6 @@ int main(){
                 }
                 break;
             case 2:
-                break;
-            case 3:
                 break;
             case 0: break;
             default:
