@@ -50,7 +50,7 @@ int menu_n_grafo(){
 int ler_grafo(Grafo **g){
     int nv, na, m;
     m = menu_n_grafo();
-    if(m < 1 || m > 2){
+    if(m < 0 || m > 2){
         printf("Opção inválida! Saindo...");
         exit(1);
     }
@@ -159,7 +159,7 @@ void prox_adj_amat(Grafo *g, int *v, int *adj, int *peso, int *prox, int *fim){
     *peso = g->p_mat[*v][*prox]; (*prox)++;
     //deixa selecionado o "próximo do próximo"
     while(*prox < g->n_vert && g->p_mat[*v][*prox] == 0) (*prox)++;
-    if(*prox == g->n_arst) *fim = TRUE;
+    if(*prox > g->n_arst) *fim = TRUE;
 }
 
 void visita_dfs(Grafo *g, int u, int *tmp, int *d,
@@ -186,7 +186,7 @@ void visita_dfs(Grafo *g, int u, int *tmp, int *d,
 }
 
 void busca_dfs(Grafo *g){
-    int v, tmp, i;
+    int tmp, i;
     int d[g->n_vert], t[g->n_vert],
     cor[g->n_vert], ant[g->n_vert];
     tmp = 0;
@@ -195,7 +195,7 @@ void busca_dfs(Grafo *g){
         ant[i] = -1;
     }
     for(i = 0; i < g->n_vert; i++)
-        if(cor[i] == BRANCO) visita_dfs(g, v, &tmp, d, t, cor, ant);
+        if(cor[i] == BRANCO) visita_dfs(g, i, &tmp, d, t, cor, ant);
 }
 
 int empty_q(Fila *f){

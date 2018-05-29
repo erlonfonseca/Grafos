@@ -7,7 +7,8 @@
 int menu_p(){
     printf("\nInserir novo grafo representado como:\n");
     printf("1. Matriz de Adjacências;\n");
-    printf("2. Lista de Adjacências;\n");
+    printf("2. Matriz de Incidências;\n");
+    printf("3. Lista de Adjacências;\n");
     printf("0. Sair do programa...\n"); int op;
     printf("> Digite uma opção: "); scanf("%d", &op);
     printf("\n");
@@ -104,7 +105,8 @@ void exec_1(Grafo *g, int op_prin, int m){
             int v1, v2, p; scanf("%d %d %d", &v1, &v2, &p);
             if(p == 0) {printf("\nPeso não pode ser 0!"); break;}
             if(m == 1) ins_dir_amat(g, p, v1, v2);
-            else ins_ndir_amat(g, p, v1, v2);
+            else if(m == 1) ins_ndir_amat(g, p, v1, v2);
+            else break;
             break;
         case 4:
             printf("Digite os vértices \"V1 V2\": ");
@@ -155,6 +157,8 @@ int main(){
                 }
                 break;
             case 2:
+                break;
+            case 3:
                 break;
             case 0: break;
             default:
