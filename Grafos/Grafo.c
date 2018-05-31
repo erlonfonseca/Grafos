@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "imp_grafo.h"
+#include "libgrafo.h"
 #include <locale.h>
 
 /* ----- Programa Teste para a Implementação de Algoritmos de Grafos ----- */
@@ -35,6 +35,7 @@ int menu_16(){
     printf("\nMenu:\n");
     printf("1. Verificar se o grafo é regular;\n");
     printf("2. Verificar o grau de um vértice;\n");
+    printf("3. Verificar o tempo de execução de inserção de aresta;\n");
     printf("0. Voltar para menu anterior...\n"); int op;
     printf("> Digite uma opção: "); scanf("%d", &op);
     printf("\n");
@@ -53,6 +54,12 @@ void exec_16(Grafo *g, int op){
             printf("Digite o número do vértice: ");
             int v; scanf("%d", &v);
             printf("Grau do vértice %d: %d", v, grau(g, v));
+            break;
+        case 3:
+            printf("Digite os vértices \"V1 V2\": ");
+            int v1, v2; scanf("%d %d", &v1, &v2);
+            double elapsed = q1_timecount(g, v1, v2, ex_amat);
+            printf("Tempo total de execução: %.5lfms.", elapsed);
             break;
         case 0:
             printf("Voltando...\n");
@@ -111,8 +118,7 @@ void exec_1(Grafo *g, int op_prin, int m){
         case 4:
             printf("Digite os vértices \"V1 V2\": ");
             scanf("%d %d", &v1, &v2);
-            if(m == 1)
-                rmv_dir_amat(g, v1, v2);
+            if(m == 1) rmv_dir_amat(g, v1, v2);
             else rmv_ndir_amat(g, v1, v2);
             break;
         case 5:
@@ -169,7 +175,7 @@ int main(){
     /* Será implementado um switch para
         liberar o grafo representado tanto
         em forma de matrizes ou de lista. */
-    g = f_gamat(g); //Libera o grafo da memória ao sair do programa
+    if(op == 1) g = f_gamat(g); //Libera o grafo da memória ao sair do programa
     printf("Saindo...");
     return 0;
 }
