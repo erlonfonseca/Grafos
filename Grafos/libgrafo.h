@@ -19,7 +19,7 @@
 */
 
 /**
-* Definição da estrutura Grafo.
+* Definição da estrutura Grafo_m.
 * n_vert: número de vértices do grafo
 * n_arst: inteiro para contagem
 * em tempo de execução do número de arestas
@@ -32,23 +32,23 @@
 * alocação dinâmica de memória.
 * @author Lakshamana
 */
-typedef struct t_grafo{
+typedef struct t_grafo_amat{
     int n_vert;
     int n_arst;
     int **p_mat;
-} Grafo;
+} Grafo_m;
 
 
 /* ------ Funções relacionadas a conceitos básicos de grafos ------ */
 
 /**
-* Alocação dinâmica do Grafo
+* Alocação dinâmica do Grafo_m
 * e sua matriz de adjacências,
 * preenchendo-a com zeros inicialmente.
 * @param nv - número de vétices
-* @return Grafo *
+* @return Grafo_m *
 */
-Grafo * a_gamat(int nv);
+Grafo_m * a_gamat(int nv);
 
 /**
 * Liberação (destruição) do grafo da memória,
@@ -56,7 +56,7 @@ Grafo * a_gamat(int nv);
 * @param g - um grafo qualquer
 * @return NULL
 */
-Grafo * f_gamat(Grafo *g);
+Grafo_m * f_gamat(Grafo_m *g);
 
 /**
 * Libera um grafo da memória se
@@ -65,7 +65,7 @@ Grafo * f_gamat(Grafo *g);
 * @param g - um grafo qualquer
 * @param nv - número de vérices
 */
-void n_grafo(Grafo **g, int nv);
+void n_grafo(Grafo_m **g, int nv);
 
 /**
 * Leitura do novo
@@ -74,7 +74,7 @@ void n_grafo(Grafo **g, int nv);
 * alocado na memória
 *
 */
-int ler_grafo(Grafo **g);
+int ler_grafo(Grafo_m **g);
 
 /**
 * Apresentar menu de grafo
@@ -89,54 +89,68 @@ int menu_n_grafo();
 * de um dado grafo
 * @author Lakshamana
 */
-void g_show(Grafo *g);
+void g_show(Grafo_m *g);
 
 /**
 * Insere aresta de um
 * grafo direcionado
 * @author Lakshamana
 */
-void ins_dir_amat(Grafo *g, int p, int v1, int v2);
+void ins_dir_amat(Grafo_m *g, int p, int v1, int v2);
 
 /**
 * Insere aresta de um
 * grafo não-direcionado
 * @author Lakshamana
 */
-void ins_ndir_amat(Grafo *g, int p, int v1, int v2);
+void ins_ndir_amat(Grafo_m *g, int p, int v1, int v2);
 
 /**
 * Remove aresta de um
 * grafo direcionado
 * @author Lakshamana
 */
-void rmv_dir_amat(Grafo *g, int v1, int v2);
+void rmv_dir_amat(Grafo_m *g, int v1, int v2);
 
 /**
 * Remove aresta de um
 * grafo não-direcionado
 * @author Lakshamana
 */
-void rmv_ndir_amat(Grafo *g, int v1, int v2);
+void rmv_ndir_amat(Grafo_m *g, int v1, int v2);
 
 /**
 * Existe aresta de um dado grafo
 * @author Lakshamana
 */
-int ex_amat(Grafo *g, int v1, int v2);
+int ex_amat(Grafo_m *g, int v1, int v2);
 
 /**
 * Grau de um vértice
 * @author Lakshamana
 */
-int grau(Grafo *g, int v);
+int grau(Grafo_m *g, int v);
 
 /**
 * Verificar se grafo é regular
 * @author Lakshamana
 */
-int reg(Grafo *g);
+int reg(Grafo_m *g);
 
+/**
+* Retorna o conjunto de vértices
+* adjacentes a um dado vértice
+* @author Lakshamana
+*/
+int * conj_adj_amat(Grafo_m *g, int v);
+
+/**
+* Imprime a lista de vértices adjacentes
+* a um dado vértice, usando as funções
+* grau e conj_adj_amat;
+* @author Lakshamana
+*/
+void print_conj_adj(int grv, int *v);
 
 /* ------ Funções relacionadas a caminhamento em grafos ------ */
 
@@ -145,35 +159,48 @@ int reg(Grafo *g);
 * adjacências está vazia
 * @author Ziviani
 */
-int ls_vazia_amat(Grafo *g, int vert);
+int ls_vazia_amat(Grafo_m *g, int vert);
 
 /**
 * Primeiro adjacente da lista de adjacências
 * de um dado vértice
 * @author Ziviani
 */
-int primeiro_ls_amat(Grafo *g, int v);
+int primeiro_ls_amat(Grafo_m *g, int v);
 
 /**
 * Próximo adjacente de um dado vértice
 * @author Ziviani
 */
-void prox_adj_amat(Grafo *g, int *v, int *adj,
+void prox_adj_amat(Grafo_m *g, int *v, int *adj,
     int *peso, int *prox, int *fim_ls);
 
 /**
 * Algoritmo de busca em profundidade
 * @author Ziviani
 */
-void visita_dfs(Grafo *g, int u, int *tmp, int *d,
+void visita_dfs(Grafo_m *g, int u, int *tmp, int *d,
     int *t, int *cor, int *ant);
+
+/**
+* Algoritmo de verificação
+* de ciclicidade de um grafo
+* @author Lakshamana
+*/
+void gcic_amat(Grafo_m *g, int u, int *tmp, int *d,
+    int *t, int *cor, int *ant, int *cic);
+
+/**
+* Invólucro de gcic_mat
+*/
+int cic_dfs(Grafo_m *g);
 
 /**
 * Inicializador e invólucro do
 * algoritmo visita_dfs
 * @author Ziviani
 */
-void busca_dfs(Grafo *g);
+void busca_dfs(Grafo_m *g);
 
 /**
 * Estrutura de fila para
@@ -242,21 +269,21 @@ alguma função geralmente seguem a seguinte forma:
 * de execução da função da Questão I
 * do trabalho de Grafos
 * @author Lakshamana
-* @param (*f)(Grafo *, int, int) recebe
-* @param Grafo *g o grafo para ser usado por f
+* @param (*f)(Grafo_m *, int, int) recebe
+* @param Grafo_m *g o grafo para ser usado por f
 * @param int v1 um vértice
 * @param int v2 outro vértice
-* ponteiro para função ex_amat(Grafo *, int, int)
+* ponteiro para função ex_amat(Grafo_m *, int, int)
 * @return o tempo de execução
 */
-double q1_timecount(Grafo *g, int v1, int v2,
-                    int (*f)(Grafo *, int, int));
+double q1_timecount(Grafo_m *g, int v1, int v2,
+                    int (*f)(Grafo_m *, int, int));
 
 /** Executa a contagem de tempo
 * de execução da função da Questão II
 * do trabalho de Grafos
 * @author Lakshamana
-* @param (*f)(Grafo *g, Lista *l, int a)
+* @param (*f)(Grafo_m *g, Lista *l, int a)
 * @return o tempo de execução
 */
 //Expandir a assinatura da função.

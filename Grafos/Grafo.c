@@ -35,14 +35,16 @@ int menu_16(){
     printf("\nMenu:\n");
     printf("1. Verificar se o grafo é regular;\n");
     printf("2. Verificar o grau de um vértice;\n");
-    printf("3. Verificar o tempo de execução de inserção de aresta;\n");
+    printf("3. Obter conjunto de vértices adjacentes a um vértice;\n");
+    printf("4. Verificar o tempo de execução de busca de aresta;\n");
+    printf("5. Verificar o tempo de execução de 3;\n");
     printf("0. Voltar para menu anterior...\n"); int op;
     printf("> Digite uma opção: "); scanf("%d", &op);
     printf("\n");
     return op;
 }
 
-void exec_16(Grafo *g, int op){
+void exec_16(Grafo_m *g, int op){
     int m;
     switch(op){
         case 1:
@@ -56,12 +58,18 @@ void exec_16(Grafo *g, int op){
             printf("Grau do vértice %d: %d", v, grau(g, v));
             break;
         case 3:
+            printf("Digite o número do vértice: ");
+            scanf("%d", &v);
+            int *p = conj_adj_amat(g, v);
+            print_conj_adj(grau(g, v), p);
+            break;
+        case 4:
             printf("Digite os vértices \"V1 V2\": ");
             int v1, v2; scanf("%d %d", &v1, &v2);
             double elapsed = q1_timecount(g, v1, v2, ex_amat);
             printf("Tempo total de execução: %.5lfms.", elapsed);
             break;
-        case 0:
+        case 5:
             printf("Voltando...\n");
             break;
         default:
@@ -82,12 +90,14 @@ int menu_17(){
     return op;
 }
 
-void exec_17(Grafo *g, int op){
+void exec_17(Grafo_m *g, int op){
     switch(op){
         case 1:
             busca_dfs(g);
             break;
         case 2:
+            if(cic_dfs(g)) printf("\nGrafo cíclico!\n");
+            else printf("\nGrafo acíclico!\n");
             break;
         case 3:
             break;
@@ -99,7 +109,7 @@ void exec_17(Grafo *g, int op){
     }
 }
 
-void exec_1(Grafo *g, int op_prin, int m){
+void exec_1(Grafo_m *g, int op_prin, int m){
     switch(op_prin){
         case 1:
             m = ler_grafo(&g);
@@ -146,7 +156,7 @@ void exec_1(Grafo *g, int op_prin, int m){
 }
 
 int main(){
-    Grafo *g = NULL;
+    Grafo_m *g = NULL;
     setlocale(LC_ALL, "portuguese");
     printf(" ** Leitura do grafo **\n");
     int op, m;

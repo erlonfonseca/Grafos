@@ -1,8 +1,8 @@
 #include "libgrafo.h"
 
-Grafo * a_gamat(int nv){
-    Grafo *g = NULL;
-    g = (Grafo *) malloc(sizeof(Grafo));
+Grafo_m * a_gamat(int nv){
+    Grafo_m *g = NULL;
+    g = (Grafo_m *) malloc(sizeof(Grafo_m));
     g->p_mat = (int **) malloc(nv * sizeof(int));
     if(!g || !g->p_mat){
         printf("Erro de memória!");
@@ -16,7 +16,7 @@ Grafo * a_gamat(int nv){
     return g;
 }
 
-Grafo * f_gamat(Grafo *g){
+Grafo_m * f_gamat(Grafo_m *g){
     if(g == NULL) return NULL;
     int i;
     for(i = 0; i < g->n_vert; i++) free(g->p_mat[i]);
@@ -25,7 +25,7 @@ Grafo * f_gamat(Grafo *g){
     return NULL;
 }
 
-void n_grafo(Grafo **g, int nv){
+void n_grafo(Grafo_m **g, int nv){
     if(*g != NULL)
         *g = f_gamat(*g);
     if(*g == NULL)
@@ -40,7 +40,7 @@ int menu_n_grafo(){
     return op;
 }
 
-int ler_grafo(Grafo **g){
+int ler_grafo(Grafo_m **g){
     int nv, na, m;
     m = menu_n_grafo();
     if(m < 0 || m > 2){
@@ -76,7 +76,7 @@ int ler_grafo(Grafo **g){
     return m;
 }
 
-void g_show(Grafo *g){
+void g_show(Grafo_m *g){
     int i, j;
     printf("\n ");
     for(i = 0; i < g->n_vert; i++)
@@ -91,40 +91,40 @@ void g_show(Grafo *g){
     printf("\n");
 }
 
-void ins_dir_amat(Grafo *g, int p, int v1, int v2){
+void ins_dir_amat(Grafo_m *g, int p, int v1, int v2){
     g->p_mat[--v1][--v2] = p;
     g->n_arst++;
 }
 
-void ins_ndir_amat(Grafo *g, int p, int v1, int v2){
+void ins_ndir_amat(Grafo_m *g, int p, int v1, int v2){
     g->p_mat[--v1][--v2] = p;
     g->p_mat[v2][v1] = p;
     g->n_arst++;
 }
 
-void rmv_dir_amat(Grafo *g, int v1, int v2){
+void rmv_dir_amat(Grafo_m *g, int v1, int v2){
     g->p_mat[--v1][--v2] = 0;
     g->n_arst--;
 }
 
-void rmv_ndir_amat(Grafo *g, int v1, int v2){
+void rmv_ndir_amat(Grafo_m *g, int v1, int v2){
     g->p_mat[--v1][--v2] = 0;
     g->p_mat[v2][v1] = 0;
     g->n_arst--;
 }
 
-int ex_amat(Grafo *g, int v1, int v2){
+int ex_amat(Grafo_m *g, int v1, int v2){
     return g->p_mat[--v1][--v2] != 0;
 }
 
-int grau(Grafo *g, int v){
+int grau(Grafo_m *g, int v){
     int i, s = 0;
     for(i = 0; i < g->n_vert; i++)
         if(g->p_mat[v - 1][i] != 0) s++;
     return s;
 }
 
-int reg(Grafo *g){
+int reg(Grafo_m *g){
     int i;
     if(g->n_vert == 1) return TRUE;
     int gr = grau(g, 1); // retorna o grau do vértice 1 (na matriz: 0)
@@ -133,36 +133,57 @@ int reg(Grafo *g){
     return gr;
 }
 
+int * conj_adj_amat(Grafo_m *g, int v){
+    int k, *p = (int *)malloc(k = 0), i;
+    --v;
+    for(i = 0; i < g->n_vert; i++)
+        if(g->p_mat[v][i] != 0){
+            p = (int *)realloc(p, ++k * sizeof(int));
+            if(!p) { printf("Erro de memória"); exit(1); }
+            p[k - 1] = i + 1;
+        }
+    return p;
+}
+
+void print_conj_adj(int grv, int *v){
+    int i;
+    printf("Lista de adjacentes: ");
+    for(i = 0; i < grv; i++)
+        if(i == grv - 1) printf("%d.", v[i]);
+        else printf("%d - ", v[i]);
+    printf("\n");
+}
+
 /* ------ Funções relacionadas a caminhamento em grafos ------ */
 
-int ls_vazia_amat(Grafo *g, int v){
+int ls_vazia_amat(Grafo_m *g, int v){
     int i;
     for(i = 0; i < g->n_vert; i++)
         if(g->p_mat[v][i] != 0) return FALSE;
     return TRUE;
 }
 
-int primeiro_ls_amat(Grafo *g, int v){
+int primeiro_ls_amat(Grafo_m *g, int v){
     int i;
     for(i = 0; i < g->n_vert; i++)
         if(g->p_mat[v][i] > 0) return i;
     return -1;
 }
 
-void prox_adj_amat(Grafo *g, int *v, int *adj, int *peso, int *prox, int *fim){
+void prox_adj_amat(Grafo_m *g, int *v, int *adj, int *peso, int *prox, int *fim){
     *adj = *prox; //adjacente é o próximo
     *peso = g->p_mat[*v][*prox]; (*prox)++;
     //deixa selecionado o "próximo do próximo"
     while(*prox < g->n_vert && g->p_mat[*v][*prox] == 0) (*prox)++;
-    if(*prox > g->n_arst) *fim = TRUE;
+    if(*prox >= g->n_vert) *fim = TRUE;
 }
 
-void visita_dfs(Grafo *g, int u, int *tmp, int *d,
+void visita_dfs(Grafo_m *g, int u, int *tmp, int *d,
     int *t, int *cor, int *ant){
     int fim_ls;
     int peso, aux, v;
     cor[u] = CINZA; (*tmp)++; d[u] = *tmp;
-    printf("Vértice %d decoberto em tempo %d.\n", u + 1, d[u]);
+    printf("Vértice %d descoberto em tempo %d.\n", u + 1, d[u]);
     if(!ls_vazia_amat(g, u)){
         aux = primeiro_ls_amat(g, u);
         fim_ls = FALSE;
@@ -180,17 +201,55 @@ void visita_dfs(Grafo *g, int u, int *tmp, int *d,
     printf("Vértice %d terminado em tempo %d.\n", u + 1, t[u]);
 }
 
-void busca_dfs(Grafo *g){
-    int tmp, i;
+void gcic_amat(Grafo_m *g, int u, int *tmp, int *d,
+    int *t, int *cor, int *ant, int *cic){
+    if(*cic == 1) return;
+    int fim_ls;
+    int peso, aux, v;
+    cor[u] = CINZA; (*tmp)++; d[u] = *tmp;
+    if(!ls_vazia_amat(g, u)){
+        aux = primeiro_ls_amat(g, u);
+        fim_ls = FALSE;
+        while(!fim_ls){
+            /* O próximo da lista de adjacentes é retornado por v
+             e aux já recebe o próximo com relação a v */
+            prox_adj_amat(g, &u, &v, &peso, &aux, &fim_ls);
+            if(cor[v] == BRANCO){
+                ant[v] = u;
+                gcic_amat(g, v, tmp, d, t, cor, ant, cic);
+            } else *cic = 1;
+        }
+    }
+    cor[u] = PRETO; (*tmp)++; t[u] = *tmp;
+    return FALSE;
+}
+
+void busca_dfs(Grafo_m *g){
     int d[g->n_vert], t[g->n_vert],
     cor[g->n_vert], ant[g->n_vert];
-    tmp = 0;
+    int i, tmp = 0;
     for(i = 0; i < g->n_vert; i++){
         cor[i] = BRANCO;
         ant[i] = -1;
     }
     for(i = 0; i < g->n_vert; i++)
         if(cor[i] == BRANCO) visita_dfs(g, i, &tmp, d, t, cor, ant);
+}
+
+int cic_dfs(Grafo_m *g){
+    int d[g->n_vert], t[g->n_vert],
+    cor[g->n_vert], ant[g->n_vert];
+    int i, tmp = 0, cic = 0;
+    for(i = 0; i < g->n_vert; i++){
+        cor[i] = BRANCO;
+        ant[i] = -1;
+    }
+    for(i = 0; i < g->n_vert; i++)
+        if(cor[i] == BRANCO){
+            gcic_amat(g, i, &tmp, d, t, cor, ant, &cic);
+            if(cic == 1) return TRUE;
+        }
+    return FALSE;
 }
 
 int empty_q(Fila *f){
@@ -233,8 +292,8 @@ void primeiro_f(Fila *f, int *v){
 
 /* ------ Funções de contagem de tempo de execução ------ */
 
-double q1_timecount(Grafo *g, int v1, int v2,
-                  int (*f)(Grafo *, int, int)){
+double q1_timecount(Grafo_m *g, int v1, int v2,
+                  int (*f)(Grafo_m *, int, int)){
     register const long _MIL = 1e6;
     #if linux
         struct timespec t1, t2;
