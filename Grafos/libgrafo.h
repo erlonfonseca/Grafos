@@ -203,6 +203,26 @@ int cic_dfs(Grafo_m *g);
 void busca_dfs(Grafo_m *g);
 
 /**
+* Inicializador da Busca em Largura
+* @author Lakshamana
+*/
+void bfs(Grafo_m *g);
+
+/**
+* Algoritmo Busca em Largura
+* @author Lakshamana
+*/
+void visita_bfs(Grafo_m *g, int u, int *cor, int *ant, int *d);
+
+/**
+* Algoritmo para imprimir
+* o caminho dada uma busca bfs
+* já realizada
+* @author Ziviani
+*/
+void print_path_dfs(Grafo_m *g, int s, int v, int *d, int *ant);
+
+/**
 * Estrutura de fila para
 * uso da busca em largura
 * @author Lakshamana
@@ -212,6 +232,11 @@ typedef struct t_fila{
     int v;
     struct t_fila *prox;
 }Fila;
+
+/**
+* Mostrar fila
+*/
+void s_fila(Fila *f);
 
 /**
 * Enfileirar
@@ -269,7 +294,7 @@ alguma função geralmente seguem a seguinte forma:
 * de execução da função da Questão I
 * do trabalho de Grafos
 * @author Lakshamana
-* @param (*f)(Grafo_m *, int, int) recebe
+* @param int (*f)(Grafo_m *, int, int) recebe
 * @param Grafo_m *g o grafo para ser usado por f
 * @param int v1 um vértice
 * @param int v2 outro vértice
@@ -283,8 +308,9 @@ double q1_timecount(Grafo_m *g, int v1, int v2,
 * de execução da função da Questão II
 * do trabalho de Grafos
 * @author Lakshamana
-* @param (*f)(Grafo_m *g, Lista *l, int a)
+* @param int *(*f)(Grafo_m *g, int a)
 * @return o tempo de execução
 */
 //Expandir a assinatura da função.
-double q2_timecount();
+double q2_timecount(Grafo_m *g, int v,
+                    int *(*f)(Grafo_m *, int));

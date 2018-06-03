@@ -70,10 +70,16 @@ void exec_16(Grafo_m *g, int op){
             printf("Tempo total de execução: %.5lfms.", elapsed);
             break;
         case 5:
+            printf("Digite o número do vértice: ");
+            scanf("%d", &v);
+            elapsed = q2_timecount(g, v, conj_adj_amat);
+            printf("Tempo total de execução: %.5lfms.", elapsed);
+            break;
+        case 0:
             printf("Voltando...\n");
             break;
         default:
-            printf("Comando inválido!\n");
+            printf("Comando inválido! Voltando...\n");
             break;
     }
 }
@@ -82,8 +88,17 @@ int menu_17(){
     printf("\nMenu:\n");
     printf("1. Busca em Profundidade;\n");
     printf("2. Ver ciclicidade de grafo;\n");
-    printf("3. Verificar ordenação topológica;\n");
-    printf("4. Verificar componentes fortemente conexos;\n");
+    printf("3. Verificar componentes fortemente conexos;\n");
+    printf("0. Voltar para menu anterior...\n"); int op;
+    printf("> Digite uma opção: "); scanf("%d", &op);
+    printf("\n");
+    return op;
+}
+
+int menu_18(){
+    printf("\nMenu:\n");
+    printf("1. Busca em Largura;\n");
+    printf("2. Imprimir caminho;\n");
     printf("0. Voltar para menu anterior...\n"); int op;
     printf("> Digite uma opção: "); scanf("%d", &op);
     printf("\n");
@@ -101,11 +116,23 @@ void exec_17(Grafo_m *g, int op){
             break;
         case 3:
             break;
-        case 4:
+        case 0:
+            printf("Voltando...\n");
+            break;
+    }
+}
+
+void exec_18(Grafo_m *g, int op){
+    switch(op){
+        case 1:
+            bfs(g);
+            break;
+        case 2:
             break;
         case 0:
             printf("Voltando...\n");
             break;
+
     }
 }
 
@@ -145,6 +172,7 @@ void exec_1(Grafo_m *g, int op_prin, int m){
             exec_17(g, menu_17());
             break;
         case 8:
+            exec_18(g, menu_18());
             break;
         case 0:
             printf("Voltando...\n");
