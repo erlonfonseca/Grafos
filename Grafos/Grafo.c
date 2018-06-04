@@ -149,8 +149,7 @@ void exec_1(Grafo_m *g, int op_prin, int m){
             int v1, v2, p; scanf("%d %d %d", &v1, &v2, &p);
             if(p == 0) {printf("\nPeso não pode ser 0!"); break;}
             if(m == 1) ins_dir_amat(g, p, v1, v2);
-            else if(m == 1) ins_ndir_amat(g, p, v1, v2);
-            else break;
+            else ins_ndir_amat(g, p, v1, v2);
             break;
         case 4:
             printf("Digite os vértices \"V1 V2\": ");

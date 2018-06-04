@@ -77,13 +77,14 @@ int ler_grafo(Grafo_m **g){
 }
 
 void g_show(Grafo_m *g){
-    int i, j;
-    printf("\n ");
+    printf("\n   "); int i;
     for(i = 0; i < g->n_vert; i++)
-        printf("%3s%d", "V", i + 1);
-    printf("\n");
+        if(i < 9) printf(" %s%d", "V0", i + 1);
+        else printf(" %s%d", "V", i + 1);
+    printf("\n"); int j;
     for(i = 0; i < g->n_vert; i++){
-        printf("%s%d", "V", i + 1);
+        if(i < 9) printf("%s%d", "V0", i + 1);
+        else printf("%s%d", "V", i + 1);
         for(j = 0; j < g->n_vert; j++)
             printf("%3d ", g->p_mat[i][j]);
         printf("\n");
@@ -98,7 +99,7 @@ void ins_dir_amat(Grafo_m *g, int p, int v1, int v2){
 
 void ins_ndir_amat(Grafo_m *g, int p, int v1, int v2){
     g->p_mat[--v1][--v2] = p;
-    g->p_mat[v2][v1] = p;
+    if(v1 != v2) g->p_mat[v2][v1] = p;
     g->n_arst++;
 }
 
@@ -109,7 +110,7 @@ void rmv_dir_amat(Grafo_m *g, int v1, int v2){
 
 void rmv_ndir_amat(Grafo_m *g, int v1, int v2){
     g->p_mat[--v1][--v2] = 0;
-    g->p_mat[v2][v1] = 0;
+    if(v1 != v2) g->p_mat[v2][v1] = 0;
     g->n_arst--;
 }
 
@@ -357,8 +358,8 @@ void primeiro_f(Fila *f, int *v){
 
 double q1_timecount(Grafo_m *g, int v1, int v2,
                   int (*f)(Grafo_m *, int, int)){
-    register const long _MIL = 1e6;
     #if linux
+        register const long _MIL = 1e6;
         struct timespec t1, t2;
         clock_gettime(CLOCK_REALTIME, &t1);
         f(g, v1, v2);
@@ -367,20 +368,20 @@ double q1_timecount(Grafo_m *g, int v1, int v2,
         elapsed += (double)(t2.tv_nsec - t1.tv_nsec) / _MIL;
         return elapsed;
     #elif WIN32
-        struct LARGE_INTEGER l1, l2, freq;
-        QueryPerformanceFrequency(&freq);
-        QueryPerformanceCounter(&t1);
+        __int64 l1, l2, freq;
+        QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+        QueryPerformanceCounter((LARGE_INTEGER *)&l1);
         f(g, v1, v2);
-        QueryPerformanceCounter(&t2);
-        double elapsed = (c2 - c1) * _MIL / CLOCKS_PER_SEC;
+        QueryPerformanceCounter((LARGE_INTEGER *)&l2);
+        double elapsed = (l2 - l1) * 1000.0 / freq;
         return elapsed;
     #endif // linux
 }
 
 double q2_timecount(Grafo_m *g, int v,
                   int *(*f)(Grafo_m *, int)){
-    register const long _MIL = 1e6;
     #if linux
+        register const long _MIL = 1e6;
         struct timespec t1, t2;
         clock_gettime(CLOCK_REALTIME, &t1);
         f(g, v);
@@ -389,12 +390,13 @@ double q2_timecount(Grafo_m *g, int v,
         elapsed += (double)(t2.tv_nsec - t1.tv_nsec) / _MIL;
         return elapsed;
     #elif WIN32
-        struct LARGE_INTEGER l1, l2, freq;
-        QueryPerformanceFrequency(&freq);
-        QueryPerformanceCounter(&t1);
+        __int64 l1, l2, freq;
+        QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+        QueryPerformanceCounter((LARGE_INTEGER *)&l1);
         f(g, v);
-        QueryPerformanceCounter(&t2);
-        double elapsed = (c2 - c1) * _MIL / CLOCKS_PER_SEC;
+        QueryPerformanceCounter((LARGE_INTEGER *)&l2);
+        double elapsed = (l2 - l1) * 1000.0 / freq;
         return elapsed;
     #endif // linux
 }
+
