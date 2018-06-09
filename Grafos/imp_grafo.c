@@ -218,7 +218,7 @@ void gcic_amat(Grafo_m *g, int u, int *tmp, int *d,
             if(cor[v] == BRANCO){
                 ant[v] = u;
                 gcic_amat(g, v, tmp, d, t, cor, ant, cic);
-            } else *cic = TRUE;
+            } else if(cor[v] == CINZA && ant[u] != v) *cic = TRUE;
         }
     }
     cor[u] = PRETO; (*tmp)++; t[u] = *tmp;

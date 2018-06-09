@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "libgrafo.h"
 #include <locale.h>
 
